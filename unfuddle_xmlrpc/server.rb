@@ -38,7 +38,7 @@ puts "  http://#{hostname}:#{server_port}/ACCOUNT/PROJECT/"
 puts "  https://#{hostname}:#{secure_port}/secure/ACCOUNT/PROJECT/"
 puts "Test using irb:"
 puts "  require 'xmlrpc/client'"
-puts "  proxy = XMLRPC::Client.new2('http://USER:PASS@localhost:#{server_port}/ACCOUNT/PROJECT/')"
+puts "  proxy = XMLRPC::Client.new2('http://USER:PASS@#{hostname}:#{server_port}/ACCOUNT/PROJECT/')"
 puts "  proxy.call('ticket.query', 'status!=closed')"
 puts "  proxy.call('ticket.get', 1)"
 
