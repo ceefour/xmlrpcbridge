@@ -11,8 +11,7 @@ module Unfuddle
     end
     
     def get(id)
-      url = "#{account.api_url}/people/#{id}.json"
-      JSON.parse(account.agent.get(url).body)
+      account.get "/people/#{id}"
     end
     
   end

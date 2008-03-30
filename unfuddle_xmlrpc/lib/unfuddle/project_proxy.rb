@@ -1,22 +1,30 @@
 require 'rubygems'
 require 'json'
+require 'cgi'
 
 require 'unfuddle/ticket_proxy'
 
 module Unfuddle
   class ProjectProxy
     attr_reader :account
-    attr_reader :id
-    attr_reader :ticket
     
-    def initialize(account, id)
+    def initialize(account)
       @account = account
-      @id = id
-      @ticket = TicketProxy.new(self)
+    end
+
+    # Returns a project by ID
+    def get(id)
+      account.get "/projects/#{id.to_i}"
     end
     
-    def api_url
-      "#{account.api_url}/projects/#{id}"
+    # Returns a project by short name
+    def get_by_short_name(short_name)
+      account.get "/projects/by_short_name/#{CGI.escape(short_name)}"
+    end
+
+    # List all projects
+    def list
+      account.get "/projects"
     end
 
   end

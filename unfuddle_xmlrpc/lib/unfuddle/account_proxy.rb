@@ -10,14 +10,15 @@ require 'unfuddle/project_proxy'
 module Unfuddle
 
   class AccountProxy
-    attr_accessor :account, :username, :password, :secure, :person
+    attr_accessor :account_name, :username, :password, :secure, :person, :project
     
-    def initialize(account, username, password, secure = false)
-      @account = account
+    def initialize(account_name, username, password, secure = false)
+      @account_name = account_name
       @username = username
       @password = password
       @secure = secure
       @person = PersonProxy.new(self)
+      @project = ProjectProxy.new(self)
     end
     
     # Parses Unfuddle's timestamp
@@ -34,18 +35,18 @@ module Unfuddle
     
     def api_url
       protocol = @secure ? 'https' : 'http'
-      "#{protocol}://#{CGI.escape(@account)}.unfuddle.com/api/v1"
+      "#{protocol}://#{CGI.escape(@account_name)}.unfuddle.com/api/v1"
     end
     
-    def project(id)
-      ProjectProxy.new(self, id)
+    # Returns the Ticket proxy for a specified project ID
+    def ticket(project_id)
+      TicketProxy.new(self, project_id)
     end
     
-    def projects
-      page = agent.get "#{api_url}/projects.json"
-      json = JSON.parse(page.body)
+    def get(uri)
+      page = agent.get "#{api_url}#{uri}.json"
+      JSON.parse(page.body)
     end
  
   end    
-
 end

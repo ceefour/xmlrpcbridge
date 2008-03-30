@@ -34,23 +34,20 @@ module Unfuddle
   #  <version-id type="integer"> </version-id>
   #</ticket>
   class TicketProxy
-    attr_reader :project
+    attr_reader :account
+    attr_reader :project_id
     
-    def initialize(project)
-      @project = project
-    end
-    
-    def agent
-      project.account.agent
+    def initialize(account, project_id)
+      @account = account
+      @project_id = project_id
     end
     
     # qstr: query string
     # returns ticket xmlrpc-ids in array
     def query(qstr)
       # TODO: implement proper Trac query filtering, at least the most common ones
-      page = agent.get "#{project.api_url}/tickets.json"
-      json = JSON.parse(page.body)
-      json.map { |ticket| ticket['number'] }
+      results = account.get "/projects/#{project_id}/tickets"
+      results.map { |ticket| ticket['number'] }
     end
     
     # Fetch a ticket. Returns [id, time_created, time_changed, attributes].
@@ -61,10 +58,7 @@ module Unfuddle
     #     "version"=>"", "summary"=>"...",
     #     "description"=>"...", "owner"=>"...", "milestone"=>"", "keywords"=>""}]
     def get(id)
-      url = "#{project.api_url}/tickets/by_number/#{id}.json"
-      puts "GET #{url}"
-      page = agent.get url
-      ticket = JSON.parse(page.body)
+      ticket = account.get "/projects/#{project_id}/tickets/by_number/#{id}"
       # TODO: severity, get severity using Unfuddle's severity-id and return its name
       # TODO: component, get component using Unfuddle's component-id and return its name
       # TODO: 'merge' Unfuddle's status and resolution into XMLRPC status
@@ -76,13 +70,13 @@ module Unfuddle
          'cc' => '',
          'status' => ticket['status'], #  <status> [new, unaccepted, reassigned, reopened, accepted, resolved, closed] </status>
          'resolution' => ticket['resolution'], #  <resolution> [fixed, works_for_me, postponed, duplicate, will_not_fix, invalid] </resolution>
-         'reporter' => project.account.person.get(ticket['reporter_id'])['username'], #  <reporter-id type="integer"> </reporter-id>
+         'reporter' => account.person.get(ticket['reporter_id'])['username'], #  <reporter-id type="integer"> </reporter-id>
          'type' => 'defect',   #  <severity-id type="integer"> </severity-id>
          'priority' => 'normal', #  <priority> [1, 2, 3, 4, 5] </priority>
          'version' => '',   #  <version-id type="integer"> </version-id>
          'summary' => ticket['summary'], #  <summary> </summary>
          'description' => ticket['description'], #  <description> </description>
-         'owner' => project.account.person.get(ticket['assignee_id'])['username'], #  <assignee-id type="integer"> </assignee-id>
+         'owner' => account.person.get(ticket['assignee_id'])['username'], #  <assignee-id type="integer"> </assignee-id>
          'milestone' => '', #  <milestone-id type="integer"> </milestone-id>
          'keywords' => ''}]
     end
