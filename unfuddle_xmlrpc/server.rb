@@ -4,6 +4,7 @@ require 'rubygems'
 require 'xmlrpc/server'
 require 'webrick'
 require 'webrick/https'  # Note: Requires Ruby/OpenSSL
+require 'socket' # gethostname
 
 $LOAD_PATH << 'lib'
 require 'unfuddle'
@@ -28,12 +29,13 @@ trap('INT') {
 }
 
 # display instructions
+hostname = Socket.gethostname
 puts "Server URL:"
-puts "  http://localhost:#{server_port}/ACCOUNT/PROJECT/"
-puts "  https://localhost:#{secure_port}/ACCOUNT/PROJECT/"
+puts "  http://#{hostname}:#{server_port}/ACCOUNT/PROJECT/"
+puts "  https://#{hostname}:#{secure_port}/ACCOUNT/PROJECT/"
 puts "Server URL for HTTPS Unfuddle accounts:"
-puts "  http://localhost:#{server_port}/ACCOUNT/PROJECT/"
-puts "  https://localhost:#{secure_port}/secure/ACCOUNT/PROJECT/"
+puts "  http://#{hostname}:#{server_port}/ACCOUNT/PROJECT/"
+puts "  https://#{hostname}:#{secure_port}/secure/ACCOUNT/PROJECT/"
 puts "Test using irb:"
 puts "  require 'xmlrpc/client'"
 puts "  proxy = XMLRPC::Client.new2('http://USER:PASS@localhost:#{server_port}/ACCOUNT/PROJECT/')"
