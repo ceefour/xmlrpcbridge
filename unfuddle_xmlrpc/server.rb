@@ -1,17 +1,11 @@
 #!/usr/bin/env ruby
 # LICENSE: LGPLv3
-
 require 'rubygems'
 require 'xmlrpc/server'
 require 'webrick'
 
 $LOAD_PATH << 'lib'
 require 'unfuddle'
-
-unless ARGV.size >= 4
-  puts "Usage: ruby server.rb ACCOUNT USERNAME PASSWORD PROJECT_NAME" 
-  exit
-end
 
 server_port = (ENV['XMLRPCSERVER_PORT'] || 8080).to_i
 server = WEBrick::HTTPServer.new(:Port => server_port) # XMLRPC::Server.new(server_port)
