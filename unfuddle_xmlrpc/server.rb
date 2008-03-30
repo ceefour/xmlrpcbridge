@@ -14,7 +14,10 @@ server.mount('/', UnfuddleServlet)
 server.mount('/secure', UnfuddleServlet, {:secure => true})
 trap('INT') { server.shutdown }
 
-puts "Server URL: http://localhost:#{server_port}/ACCOUNT/PROJECT/"
+puts "Server URL:"
+puts "  http://localhost:#{server_port}/ACCOUNT/PROJECT/"
+puts "Server URL for HTTPS Unfuddle accounts:"
+puts "  http://localhost:#{server_port}/secure/ACCOUNT/PROJECT/"
 puts "Test using irb:"
 puts "  require 'xmlrpc/client'"
 puts "  proxy = XMLRPC::Client.new2('http://USER:PASS@localhost:#{server_port}/ACCOUNT/PROJECT/')"
