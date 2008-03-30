@@ -14,8 +14,10 @@ To change the port, set and export the environment variable XMLRPCSERVER_PORT.
 [2008-03-30 21:10:18] INFO  ruby 1.8.6 (2007-06-07) [i486-linux]
 Server URL:
   http://localhost:8080/ACCOUNT/PROJECT/
+  https://localhost:8081/ACCOUNT/PROJECT/
 Server URL for HTTPS Unfuddle accounts:
-  http://localhost:8080/secure/ACCOUNT/PROJECT/
+  http://localhost:8080/ACCOUNT/PROJECT/
+  https://localhost:8081/secure/ACCOUNT/PROJECT/
 Test using irb:
   require 'xmlrpc/client'
   proxy = XMLRPC::Client.new2('http://USER:PASS@localhost:8080/ACCOUNT/PROJECT/')
@@ -31,7 +33,8 @@ To test the server, open IRB and do what the server says upon startup:
   proxy.call('ticket.get', 1)
 
 If your Unfuddle account supports/mandates secure connection, prepend "/secure" to the URL.
-NOTE: Your connection to the XML-RPC server is still unencrypted.
+NOTE: Your connection to the XML-RPC server is still unencrypted unless you use the https form
+for the XML-RPC connection itself.
 
 Mylyn Support
 -------------
