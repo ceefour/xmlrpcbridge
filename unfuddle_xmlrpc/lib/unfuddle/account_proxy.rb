@@ -46,6 +46,7 @@ module Unfuddle
     end
     
     def get(uri)
+      puts 'Get ' + uri
       page = agent.get "#{api_url}#{uri}.json"
       JSON.parse(page.body)
     end

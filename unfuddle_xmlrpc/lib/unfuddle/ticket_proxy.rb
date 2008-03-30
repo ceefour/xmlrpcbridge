@@ -64,6 +64,8 @@ module Unfuddle
       # TODO: severity, get severity using Unfuddle's severity-id and return its name
       # TODO: component, get component using Unfuddle's component-id and return its name
       # TODO: 'merge' Unfuddle's status and resolution into XMLRPC status
+      reporter_username = ticket['reporter_id'] ? account.person.get(ticket['reporter_id'])['username'] : ''
+      assignee_username = ticket['assignee_id'] ? account.person.get(ticket['assignee_id'])['username'] : ''
       [ticket['number'], #  <number type="integer"> </number>
         AccountProxy.parse_timestamp(ticket['created_at']).to_time.to_i, #  <created-at type="datetime"> </created-at>
         AccountProxy.parse_timestamp(ticket['updated_at']).to_time.to_i, #  <updated-at type="datetime"> </updated-at>
@@ -72,13 +74,13 @@ module Unfuddle
          'cc' => '',
          'status' => ticket['status'], #  <status> [new, unaccepted, reassigned, reopened, accepted, resolved, closed] </status>
          'resolution' => ticket['resolution'], #  <resolution> [fixed, works_for_me, postponed, duplicate, will_not_fix, invalid] </resolution>
-         'reporter' => account.person.get(ticket['reporter_id'])['username'], #  <reporter-id type="integer"> </reporter-id>
+         'reporter' => reporter_username, #  <reporter-id type="integer"> </reporter-id>
          'type' => 'defect',   #  <severity-id type="integer"> </severity-id>
          'priority' => 'normal', #  <priority> [1, 2, 3, 4, 5] </priority>
          'version' => '',   #  <version-id type="integer"> </version-id>
          'summary' => ticket['summary'], #  <summary> </summary>
          'description' => ticket['description'], #  <description> </description>
-         'owner' => account.person.get(ticket['assignee_id'])['username'], #  <assignee-id type="integer"> </assignee-id>
+         'owner' => assignee_username, #  <assignee-id type="integer"> </assignee-id>
          'milestone' => '', #  <milestone-id type="integer"> </milestone-id>
          'keywords' => ''}]
     end
