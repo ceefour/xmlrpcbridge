@@ -1,10 +1,18 @@
 require 'xmlrpc/server'
 
 class UnfuddleServlet < XMLRPC::WEBrickServlet
+  attr_accessor :secure
   
   def self.get_instance(server, *options)
     # always create a new servlet, it's ok
-    UnfuddleServlet.new
+    servlet = UnfuddleServlet.new
+    if options && options.first && !options.first.empty?
+      hash = options[0]
+      if hash[:secure]
+        servlet.secure = true
+      end
+    end
+    servlet
   end
   
   def service(request, response)
@@ -15,9 +23,10 @@ class UnfuddleServlet < XMLRPC::WEBrickServlet
       password = pass
     end
     dummy, account_name, project_short_name = request.path_info.match(/^\/([a-zA-Z0-9\_]+)\/([a-zA-Z0-9\_]+)/).to_a
+    secure = @secure || false
     # add handlers
-    puts "Loading account #{account_name} project #{project_short_name}..."
-    account = Unfuddle::AccountProxy.new(account_name, username, password)
+    puts "Loading account [#{account_name}] project [#{project_short_name}] secure [#{secure}]..."
+    account = Unfuddle::AccountProxy.new(account_name, username, password, secure)
     project = account.project.get_by_short_name(project_short_name)
     ticket = account.ticket(project['id'])
     ticket_interface = XMLRPC::interface('ticket') {
