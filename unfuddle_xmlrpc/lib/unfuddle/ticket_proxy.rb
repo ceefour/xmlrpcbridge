@@ -1,3 +1,5 @@
+# LICENSE: LGPLv3
+
 require 'rubygems'
 require 'json'
 require 'activesupport' # DateTime#to_time
